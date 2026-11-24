@@ -72,7 +72,13 @@ if [ ! -d "$OCD/.git" ]; then
 fi
 git -C "$OCD" fetch -q --depth 1 origin "$OPENCD_COMMIT" 2>/dev/null || true
 git -C "$OCD" checkout -q "$OPENCD_COMMIT"
-python -c "import opencd" 2>/dev/null || pip install -q -e "$OCD" --no-build-isolation
+# openmim -> openxlab pins setuptools~=60.2 (no PEP 660 editable support, and pip>=25
+# dropped the `setup.py develop` fallback). Re-upgrade before the editable install;
+# the openxlab pin conflict is harmless (only used by `mim download`).
+if ! python -c "import opencd" 2>/dev/null; then
+  pip install -q "setuptools>=64,<70" 2>&1 | grep -v "openxlab" || true
+  pip install -q -e "$OCD" --no-build-isolation
+fi
 
 # ---------------------------------------------------------------- 5. data
 if [ "$SKIP_DATA" -eq 0 ]; then

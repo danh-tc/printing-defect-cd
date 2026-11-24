@@ -73,12 +73,19 @@ def main():
     ap.add_argument("--strat-thr", type=float, default=0.3)
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--final", action="store_true", help="required to evaluate on test")
+    ap.add_argument("--exclude", help="CSV with a 'name' column (e.g. results/analysis/dup_with_train.csv: "
+                                      "val/test pairs byte-identical to a train pair) to drop from scoring")
     args = ap.parse_args()
     if args.split == "test" and not args.final:
         sys.exit("Refusing to evaluate on test without --final (test is for frozen models only).")
 
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     samples = index_split(args.data, args.split, args.mask_dir)
+    if args.exclude:
+        drop = set(pd.read_csv(args.exclude)["name"])
+        n0 = len(samples)
+        samples = [s for s in samples if s.name not in drop]
+        print(f"--exclude: dropped {n0 - len(samples)} / {n0} images")
     with Pool(args.workers) as pool:
         evs = list(tqdm(pool.imap_unordered(eval_one, [(s, args.pred) for s in samples], chunksize=8),
                         total=len(samples)))

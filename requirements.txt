@@ -1,7 +1,9 @@
-numpy>=1.24
+# numpy<2: torch 2.1.2 / mmcv 2.1.0 wheels are built against numpy 1.x.
+# opencv>=4.11 requires numpy>=2, so cap it as well.
+numpy>=1.24,<2
 scipy>=1.10
-scikit-image>=0.21
-opencv-python-headless>=4.8
+scikit-image>=0.21,<0.25
+opencv-python-headless>=4.8,<4.11
 pandas>=2.0
 tqdm>=4.65
 matplotlib>=3.7
