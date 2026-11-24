@@ -61,7 +61,7 @@ cd "$ROOT"
 
 if [ -n "$WATCH_PID" ]; then
   kill "$WATCH_PID" 2>/dev/null || true; wait "$WATCH_PID" 2>/dev/null || true; WATCH_PID=""
-  python scripts/hf_sync.py push --run-id "$RUN_ID" --work-dir "$WORK" || echo "final HF push failed; retry: python scripts/hf_sync.py push --run-id $RUN_ID"
+  python scripts/hf_sync.py push --final --run-id "$RUN_ID" --work-dir "$WORK" || echo "final HF push failed; retry: python scripts/hf_sync.py push --run-id $RUN_ID"
 fi
 python scripts/collect_run.py --run-id "$RUN_ID" --work-dir "$WORK" \
   --status "$([ "$STATUS" -eq 0 ] && echo done || echo failed)"

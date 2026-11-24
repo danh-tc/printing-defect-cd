@@ -56,7 +56,7 @@ def _local_files(work: Path):
     return files
 
 
-def push(work: Path, run_id: str, quiet=False) -> int:
+def push(work: Path, run_id: str, quiet=False, final=False) -> int:
     api, repo = _api()
     state_f = work / STATE
     state = json.loads(state_f.read_text()) if state_f.exists() else {}
@@ -70,8 +70,8 @@ def push(work: Path, run_id: str, quiet=False) -> int:
         sig = f"{st.st_size}:{int(st.st_mtime)}"
         if state.get(key) == sig:
             continue
-        if f.suffix == ".pth" and time.time() - st.st_mtime < 30:
-            continue  # may still be being written; next round
+        if f.suffix == ".pth" and not final and time.time() - st.st_mtime < 30:
+            continue  # may still be being written; next round (skip check with --final)
         api.upload_file(path_or_fileobj=str(f), path_in_repo=f"{prefix}/{key}", repo_id=repo,
                         commit_message=f"{run_id}: {key}")
         state[key] = sig
@@ -144,6 +144,7 @@ def main():
     ap.add_argument("--work-dir")
     ap.add_argument("--interval", type=int, default=600)
     ap.add_argument("--best-only", action="store_true")
+    ap.add_argument("--final", action="store_true", help="push: training has stopped, upload fresh .pth too")
     a = ap.parse_args()
     if a.cmd == "list":
         return list_runs()
@@ -151,7 +152,7 @@ def main():
         sys.exit("--run-id required")
     work = Path(a.work_dir) if a.work_dir else ROOT / "outputs" / "work_dirs" / a.run_id
     if a.cmd == "push":
-        print(f"[hf] {push(work, a.run_id)} file(s) uploaded")
+        print(f"[hf] {push(work, a.run_id, final=a.final)} file(s) uploaded")
     elif a.cmd == "watch":
         watch(work, a.run_id, a.interval)
     else:
