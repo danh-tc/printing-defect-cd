@@ -1,0 +1,20 @@
+{
+  "run_id": "1124-1334-changeformer_b0-smoke-s0",
+  "status": "done",
+  "last_iter": 300,
+  "sec_per_iter": 0.048338991403579716,
+  "gpu_hours": 0.004028249283631644,
+  "est_gpu_hours_full": 0.5370999044842191,
+  "best_val": {
+    "aAcc": 96.18,
+    "mFscore": 83.82,
+    "mPrecision": 89.28,
+    "mRecall": 79.88,
+    "mIoU": 74.73,
+    "mAcc": 79.88,
+    "data_time": 0.000701476693381315,
+    "time": 0.007495312116342111,
+    "step": 300
+  },
+  "max_memory_mb": 1481
+}

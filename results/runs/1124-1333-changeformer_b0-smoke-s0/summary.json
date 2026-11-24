@@ -1,0 +1,10 @@
+{
+  "run_id": "1124-1333-changeformer_b0-smoke-s0",
+  "status": "failed",
+  "last_iter": 0,
+  "sec_per_iter": null,
+  "gpu_hours": null,
+  "est_gpu_hours_full": null,
+  "best_val": {},
+  "max_memory_mb": null
+}

@@ -1,0 +1,20 @@
+{
+  "run_id": "1124-1336-snunet_c16-smoke-s0",
+  "status": "done",
+  "last_iter": 300,
+  "sec_per_iter": 0.09758999943733215,
+  "gpu_hours": 0.008132499953111013,
+  "est_gpu_hours_full": 1.0843333270814683,
+  "best_val": {
+    "aAcc": 96.61,
+    "mFscore": 86.55,
+    "mPrecision": 88.98,
+    "mRecall": 84.45,
+    "mIoU": 78.16,
+    "mAcc": 84.45,
+    "data_time": 0.0006940866291636947,
+    "time": 0.011060550609464627,
+    "step": 300
+  },
+  "max_memory_mb": 4948
+}
