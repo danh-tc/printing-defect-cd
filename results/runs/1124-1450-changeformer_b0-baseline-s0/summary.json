@@ -1,0 +1,20 @@
+{
+  "run_id": "1124-1450-changeformer_b0-baseline-s0",
+  "status": "done",
+  "last_iter": 40000,
+  "sec_per_iter": 0.05058702878784716,
+  "gpu_hours": 0.5620780976427463,
+  "est_gpu_hours_full": 0.5620780976427463,
+  "best_val": {
+    "aAcc": 98.52,
+    "mFscore": 94.4,
+    "mPrecision": 95.09,
+    "mRecall": 93.73,
+    "mIoU": 89.79,
+    "mAcc": 93.73,
+    "data_time": 0.0006072707758605025,
+    "time": 0.00739971281007956,
+    "step": 40000
+  },
+  "max_memory_mb": 1478
+}

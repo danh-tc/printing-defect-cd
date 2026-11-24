@@ -1,0 +1,5 @@
+thickness_bin,recall|low_contrast,recall|high_contrast,n|low_contrast,n|high_contrast
+G1_very_thin,,,0,0
+G2_thin,0.14705882352941177,0.6153846153846154,34,13
+G3_medium,0.42718446601941745,0.5866666666666667,103,75
+G4_thick,0.6260869565217392,0.8222222222222222,460,720

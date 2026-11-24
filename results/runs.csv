@@ -3,4 +3,4 @@ run_id,config,tag,seed,status,started,finished,gpu_hours,host,git_commit,metrics
 1124-1334-changeformer_b0-smoke-s0,changeformer_b0_taktpixel,smoke,0,done,2026-11-24 13:34,2026-11-24 13:36,0.00,b9e55ed7d3a9,878ffc7,"{""mIoU"":74.73,""mFscore"":83.82,""step"":300}",train_cfg.max_iters=300 train_cfg.val_interval=300
 1124-1336-snunet_c16-smoke-s0,snunet_c16_taktpixel,smoke,0,done,2026-11-24 13:36,2026-11-24 13:36,0.01,b9e55ed7d3a9,878ffc7,"{""mIoU"":78.16,""mFscore"":86.55,""step"":300}",train_cfg.max_iters=300 train_cfg.val_interval=300
 1124-1341-snunet_c16-baseline-s0,snunet_c16_taktpixel,baseline,0,done,2026-11-24 13:41,2026-11-24 14:50,1.13,b9e55ed7d3a9,5364025,"{""mIoU"":90.57,""mFscore"":94.87,""step"":40000}",
-1124-1450-changeformer_b0-baseline-s0,changeformer_b0_taktpixel,baseline,0,running,2026-11-24 14:50,,,b9e55ed7d3a9,89e3a76,,
+1124-1450-changeformer_b0-baseline-s0,changeformer_b0_taktpixel,baseline,0,done,2026-11-24 14:50,2026-11-24 15:25,0.56,b9e55ed7d3a9,89e3a76,"{""mIoU"":89.79,""mFscore"":94.4,""step"":40000}",

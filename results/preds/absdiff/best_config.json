@@ -1,0 +1,6 @@
+{
+  "signal": "rgb",
+  "blur_sigma": 2.0,
+  "threshold": 30.0,
+  "min_area": 16
+}
