@@ -1,0 +1,20 @@
+{
+  "run_id": "1124-1534-changeformer_b0-pilot_H-aug-s0",
+  "status": "done",
+  "last_iter": 40000,
+  "sec_per_iter": 0.05065970208710593,
+  "gpu_hours": 0.5628855787456214,
+  "est_gpu_hours_full": 0.5628855787456214,
+  "best_val": {
+    "aAcc": 98.56,
+    "mFscore": 94.56,
+    "mPrecision": 95.23,
+    "mRecall": 93.92,
+    "mIoU": 90.05,
+    "mAcc": 93.92,
+    "data_time": 0.0005406964826219864,
+    "time": 0.0070550600990994285,
+    "step": 40000
+  },
+  "max_memory_mb": 1478
+}

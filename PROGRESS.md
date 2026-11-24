@@ -4,15 +4,20 @@
 - Phase: **1 – Preparation** (24–25/11)
 - GPU machine set up end-to-end (2026-11-24). Dataset analysis + leakage check done; 50 review panels generated (sheet not yet filled).
 - **Gate 0 passed (24/11):** ChangeFormer-b0 ~0.5 GPU-h, SNUNet-c16 ~1.1 GPU-h per 40k run → both backbones kept.
-- Benchmark B0/B1/B2 done on val (24/11). Preliminary Gate 1 evidence below; waiting on label review.
+- Benchmark B0/B1/B2 done on val (24/11). Common weakness = low-contrast defects (both DL models). Pilot H-aug (paired aug) rejected. Waiting on label review + literature before choosing the fix.
 - Next gate: **Gate 1 (29/11)**.
 
 ## Next actions
-1. New machine: `cp .env.example .env` (fill HF_TOKEN) → `bash setup.sh`. Restore preds: `hf_sync.py pull --run-id <run> --best-only` → `opencd_predict.py`.
-2. **User:** fill `results/review_failures/failure_sheet.csv` (50 joint misses; panels via `scripts/failure_panels.py`, legend GT red / B1 green / B2 blue / yellow box = missed comp) and `results/review/review_sheet.csv`.
-3. Pilot H-aug (1 seed, 40k, ChangeFormer = cheaper): paired or no photometric aug → compare low-contrast recall vs `1124-1450-changeformer_b0-baseline-s0`.
-4. Literature (3–5 papers): low-contrast / subtle defects in reference-based print inspection; augmentation consistency in change detection.
-5. Decide primary component metric (original vs merged-within-3px) before G1.
+1. New machine: `cp .env.example .env` (fill HF_TOKEN) → `bash setup.sh` (≈10 min; dataset comes from HF mirror).
+   Predictions/panels are not in git; regenerate when needed:
+   `python scripts/hf_sync.py pull --run-id <run> --best-only` → `opencd_predict.py --config <cfg> --ckpt outputs/work_dirs/<run>/best_*.pth --split val --out outputs/preds/<run>/val`
+   (runs: `1124-1341-snunet_c16-baseline-s0`, `1124-1450-changeformer_b0-baseline-s0`, `1124-1534-changeformer_b0-pilot_H-aug-s0`),
+   then `failure_panels.py` (see its docstring) for the 50 joint-miss panels.
+2. **User (no GPU needed):** fill `results/review_failures/failure_sheet.csv` + `results/review/review_sheet.csv`; download No et al. 2026 PDF (ResearchGate, blocked from GPU host).
+   Key question: are low-contrast misses real visible defects or label artefacts (dataset labels come from a differencing algorithm + manual refinement)?
+3. Literature (3–5 papers): No et al. 2026 (frequency decomposition, closest); low-contrast/subtle defects in reference-based inspection; explicit colour-difference priors in CD; synthetic subtle-defect augmentation (CutPaste/DRAEM-style) — check novelty.
+4. Choose next pilot for low contrast (H-aug ruled out). Candidates: (a) explicit ΔE/Lab-difference input or feature fusion (note B0 ΔE alone only 0.56 on low contrast); (b) synthetic low-contrast defect pasting as positives; (c) loss re-weighting by contrast/instance (blob-style). Pilot on ChangeFormer (0.56 GPU-h), compare vs `1124-1450-changeformer_b0-baseline-s0` with `compare_models.py`.
+5. Decide primary component metric (original vs merged-within-3px) before G1. Gate 1 deadline 29/11.
 
 ## Checklist
 ### Phase 1 – Preparation (24–25/11)
@@ -31,7 +36,7 @@
 - [ ] Candidate fixes implemented (ΔE input channel; Skeleton Recall / Blob loss)
 - [ ] 3–5 related papers for the observed failure case
 - [ ] Review 30–50 failure cases
-- [ ] Pilot of candidate fix
+- [ ] Pilot of candidate fix (H-aug paired aug: done, no signal → rejected)
 - [ ] Gate 1 decision
 ### Phase 3 – Improvement (30/11–06/12)
 - [ ] Improved model seed 1 → Gate 2 (02/12)
@@ -57,8 +62,11 @@
 | 2026-11-24 | Component metric is fragmentation-sensitive: merging comps within ~3 px (7×7 dilation for labelling) halves FP/img (B1 1.62→0.77, B2 1.63→1.01), line recall B1 0.34→0.45, B2 0.41→0.59. Report a merged-component variant as robustness check (decide primary metric at G1). | inline analysis 2026-11-24 (re-run to add as script if adopted) |
 | 2026-11-24 | **Hypothesis H-aug:** Open-CD `MultiImgPhotoMetricDistortion` (brightness ±10, contrast/saturation 0.8–1.2, hue ±10) is applied *independently* to A and B. On 60 train pairs × 5 draws it shifts background ΔE from ~0.6 to median 4.9 / P75 9.7 / P90 14.7 — the same range as line (12.0) and friction (12.8) defects, labelled 'no change'. Likely teaches the model to ignore low-ΔE differences. Cheap pilot: same 40k run with paired (identical) or no photometric aug. | `opencd/datasets/transforms/transforms.py` L682-716 |
 | 2026-11-24 | Visual check (12 joint-miss panels): line GT = chain of fragments along a continuous faint streak; several friction GT blobs sit on halftone areas with barely visible defect; color_shift defect extent within misregistration is ambiguous → label-noise risk must be checked before G1 (`results/review_failures/failure_sheet.csv`). | `outputs/review_failures/panels/` |
+| 2026-11-24 | **Literature scan (quick, web):** (1) Taktpixel2025PD-CD has *no* associated paper and *no* published baselines (GitHub README + Zenodo; Tamaki 2025, DOI 10.5281/zenodo.15318946) → a stratified benchmark is itself a contribution (re-check Google Scholar citations of the DOI before writing). (2) README: labels = candidates from 'standard industrial inspection algorithms' (master–target differencing), then manual mask refinement + expert removal of FPs → GT likely biased toward high-ΔE regions; explains fragmented line GT; makes label-bias a real risk for low-contrast claims. (3) Closest method paper: No et al., Jan 2026 (ResearchGate preprint) 'Reference-Based Microscopic Defect Detection in High Resolution Printed Media Using Learnable Frequency Decomposition' — learnable FFT filters keep high-freq defect signal, treats low-freq colour shift as nuisance, reports weak activations for diffuse low-contrast defects. Not on Taktpixel; full text not retrieved (403) → user to download. (4) No paper found analysing independent photometric augmentation as harmful for industrial/print CD (only RS pseudo-change works). | GitHub taktpixel/Taktpixel2025PD-CD; web search 2026-11-24 |
+| 2026-11-24 | **Pilot H-aug: no signal → H-aug rejected (1 seed).** ChangeFormer-b0 40k with paired photometric aug (`1124-1534-changeformer_b0-pilot_H-aug-s0`, 0.56 GPU-h) vs B2: pix F1 0.899 vs 0.896, comp recall@0.3 0.843 vs 0.845, FP/img 1.68 vs 1.63; low-contrast recall 0.74 [0.71-0.78] vs 0.75 [0.71-0.78]; color_shift-low 0.67 vs 0.68; friction-low 0.71 vs 0.71. line 0.52 vs 0.41 but n=29, CIs overlap, and per-comp flips are symmetric (33 lost / 30 gained) → noise. Independent A/B colour jitter is not what limits low-contrast recall. Keep default aug for all further runs (comparability with B1/B2). Uses 1 of 4 reserve runs. | `results/compare/pilot_Haug_val/`, `results/eval/1124-1534-changeformer_b0-pilot_H-aug-s0_val/` |
 
 ## Session log
+- 2026-11-24 (GPU #1, end): pilot H-aug (paired photometric aug) → no effect, rejected. Quick literature scan (dataset has no paper/baselines; closest method No et al. 2026). Machine released after sync.
 - 2026-11-24 (GPU #1): B1/B2 40k baselines in tmux (1.13 + 0.56 GPU-h), val eval, `compare_models.py` + `failure_panels.py`, preliminary G1 evidence (low contrast), H-aug found.
 - 2026-11-24 (GPU #1): Gate 0 smoke tests. Fixed (a) Open-CD config: duplicate keys across multiple `_base_` → overrides inlined, `_taktpixel_data.py` removed; (b) `hf_sync.py push` skipped .pth < 30 s old, so the final push after training never uploaded the last/best ckpt → `--final` flag in train_opencd.sh. Verified HF pull restores identical ckpt; opencd_predict → evaluate works end-to-end.
 - 2026-11-24 (GPU #1): setup done, dataset via HF mirror; analyze_dataset + leakage check; 50 review panels; `evaluate.py --exclude` added. Visual check of 12 panels: masks mostly tight; some `line` masks cover only part of the visible streak (possible label noise); color_shift shows misregistration ghosts.
