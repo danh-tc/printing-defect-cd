@@ -32,7 +32,7 @@ log() { printf '\n\033[1;32m[setup]\033[0m %s\n' "$*"; }
 log "1/6 system packages"
 SUDO=""; [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null && SUDO="sudo"
 NEED=""
-for p in git unzip curl libgl1 libglib2.0-0; do dpkg -s "$p" >/dev/null 2>&1 || NEED="$NEED $p"; done
+for p in git unzip curl tmux libgl1 libglib2.0-0; do dpkg -s "$p" >/dev/null 2>&1 || NEED="$NEED $p"; done
 PYVER=$($PY -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 dpkg -s "python${PYVER}-venv" >/dev/null 2>&1 || NEED="$NEED python${PYVER}-venv"
 if [ -n "$NEED" ]; then

@@ -3,6 +3,9 @@
 The GPU machine is rented by the hour and wiped between rentals; the Claude extension
 is reinstalled each time. **All memory of past work lives in this repo.**
 
+User is in GMT+7 (Vietnam) and writes in Vietnamese: report times/ETAs in GMT+7.
+The rented machine clock is UTC, so run_ids and log timestamps are UTC.
+
 ## At the start of every session
 1. Read `PROGRESS.md` (current phase, decisions, next actions) and run `bash scripts/status.sh`.
 2. If `.env` is missing, ask the user for HF_TOKEN / HF_REPO (see `.env.example`).
