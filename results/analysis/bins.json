@@ -1,0 +1,31 @@
+{
+  "stride": 4,
+  "thickness_edges_px": [
+    2.0,
+    4.0,
+    8.0
+  ],
+  "thickness_labels": [
+    "G1_very_thin",
+    "G2_thin",
+    "G3_medium",
+    "G4_thick"
+  ],
+  "area_edges": [
+    422.0,
+    1184.333333333333
+  ],
+  "area_labels": [
+    "small",
+    "medium",
+    "large"
+  ],
+  "delta_e_edges": [
+    29.161213874816895
+  ],
+  "delta_e_labels": [
+    "low_contrast",
+    "high_contrast"
+  ],
+  "source": "train split quantiles"
+}

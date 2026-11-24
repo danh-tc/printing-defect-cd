@@ -1,0 +1,26 @@
+md5_A: 24 identical files appear in more than one split
+md5_B: 23 identical files appear in more than one split
+
+sheet_id (heuristic, filename-based): 82 unique, 82 shared across splits
+  proofrog_a4pera_back_00003: ['test', 'train', 'val']
+  proofrog_a4pera_back_00004: ['test', 'train', 'val']
+  proofrog_a4pera_back_00005: ['test', 'train', 'val']
+  proofrog_a4pera_back_00006: ['test', 'train', 'val']
+  proofrog_a4pera_back_00007: ['test', 'train', 'val']
+  proofrog_a4pera_back_00009: ['test', 'train', 'val']
+  proofrog_a4pera_back_00010: ['test', 'train', 'val']
+  proofrog_a4pera_back_00011: ['test', 'train', 'val']
+  proofrog_a4pera_back_00012: ['test', 'train', 'val']
+  proofrog_a4pera_back_00013: ['test', 'train', 'val']
+  proofrog_a4pera_back_00014: ['test', 'train', 'val']
+  proofrog_a4pera_front_00002: ['test', 'train', 'val']
+  proofrog_a4pera_front_00003: ['test', 'train', 'val']
+  proofrog_a4pera_front_00004: ['test', 'train', 'val']
+  proofrog_kakaku_00002: ['test', 'train', 'val']
+  proofrog_kakaku_00003: ['test', 'train', 'val']
+  proofrog_kakaku_00004: ['test', 'train', 'val']
+  proofrog_kakaku_00005: ['test', 'train', 'val']
+  proofrog_kakaku_00007: ['test', 'train', 'val']
+  proofrog_kakaku_00008: ['test', 'train', 'val']
+
+Note: sheet_id overlap is not necessarily leakage (tiles of one sheet may be split by design); inspect before concluding.
