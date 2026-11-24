@@ -226,3 +226,6 @@ __marimo__/
 data/
 outputs/
 *.zip
+.venv/
+third_party/
+.data_root

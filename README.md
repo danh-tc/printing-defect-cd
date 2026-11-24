@@ -38,19 +38,27 @@ scripts/
 tests/                 pytest: thickness estimator + metrics
 ```
 
-## Setup
+## Setup on a rented GPU (Ubuntu + RTX 3090)
 
 ```bash
-pip install -r requirements.txt
-python -m pytest -q          # 35 tests
+git clone https://github.com/danh-tc/printing-defect-cd && cd printing-defect-cd
+bash setup.sh                    # venv, torch 2.1.2+cu121, mmcv 2.1.0, Open-CD, dataset, tests
+source .venv/bin/activate
+bash scripts/status.sh           # where we left off
 ```
 
-Download `Taktpixel2025PD-CD.zip` from Zenodo (DOI 10.5281/zenodo.15318946,
-md5 `157ee2371e1fad27b77442a78d7ee63c`) and unzip to `data/Taktpixel2025PD-CD/`:
+`setup.sh` is idempotent. Use `CUDA_VARIANT=cu118` if the driver is older than 530.
 
-```bash
-bash scripts/download_data.sh
-```
+## Session workflow (machine is wiped between rentals)
+
+- **Memory lives in git:** `PROGRESS.md` (status, decisions, next actions),
+  `results/runs.csv` (every training run), `results/` (small CSV/JSON outputs).
+  `CLAUDE.md` tells a fresh Claude session to read these first.
+- Train via `bash scripts/train_opencd.sh <config> <tag> <seed> [cfg-options]`. It registers the run,
+  copies logs/metrics to `results/runs/<run_id>/` and prints estimated GPU-hours.
+- Predictions for evaluation: `python scripts/opencd_predict.py --config <cfg> --ckpt <pth> --split val --out ...`
+- **Before releasing the machine:** `bash scripts/sync_results.sh "<msg>"` (commit + push results).
+  Checkpoints are not in git; set `RCLONE_REMOTE=gdrive:pdcd` to upload `best_*.pth`.
 
 ## Phase 1 commands
 
