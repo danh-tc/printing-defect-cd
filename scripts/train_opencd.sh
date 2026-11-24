@@ -51,6 +51,7 @@ else
   echo "WARNING: HF_REPO not set — checkpoints exist only on this machine."
 fi
 
+export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"  # for custom_imports (pdcd.opencd_ext)
 cd "$OCD"
 set +e
 python tools/train.py "configs/taktpixel/${CFG_NAME}.py" --work-dir "$WORK" "${RESUME_ARGS[@]}" \

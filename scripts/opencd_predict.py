@@ -37,6 +37,7 @@ def main():
     out = Path(a.out).resolve(); out.mkdir(parents=True, exist_ok=True)
     os.chdir(OCD)  # data_root and _base_ paths are relative to Open-CD
     sys.path.insert(0, str(OCD))
+    sys.path.insert(0, str(ROOT / "src"))  # custom_imports: pdcd.opencd_ext
     from mmengine.config import Config
     from mmengine.runner import Runner
 
