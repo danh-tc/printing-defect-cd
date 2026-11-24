@@ -42,6 +42,7 @@ tests/                 pytest: thickness estimator + metrics
 
 ```bash
 git clone https://github.com/danh-tc/printing-defect-cd && cd printing-defect-cd
+cp .env.example .env && nano .env   # HF_TOKEN (write) + HF_REPO
 bash setup.sh                    # venv, torch 2.1.2+cu121, mmcv 2.1.0, Open-CD, dataset, tests
 source .venv/bin/activate
 bash scripts/status.sh           # where we left off
@@ -57,8 +58,12 @@ bash scripts/status.sh           # where we left off
 - Train via `bash scripts/train_opencd.sh <config> <tag> <seed> [cfg-options]`. It registers the run,
   copies logs/metrics to `results/runs/<run_id>/` and prints estimated GPU-hours.
 - Predictions for evaluation: `python scripts/opencd_predict.py --config <cfg> --ckpt <pth> --split val --out ...`
-- **Before releasing the machine:** `bash scripts/sync_results.sh "<msg>"` (commit + push results).
-  Checkpoints are not in git; set `RCLONE_REMOTE=gdrive:pdcd` to upload `best_*.pth`.
+- **Checkpoints → Hugging Face Hub** (private repo `HF_REPO`): `train_opencd.sh` uploads the newest
+  `iter_*.pth` + `best_*.pth` every 10 min (`HF_INTERVAL`) and at the end; older iters are pruned.
+  - Interrupted run: `RESUME=<run_id> bash scripts/train_opencd.sh <cfg> <tag> <seed>` (pulls from HF, `--resume`).
+  - Predict on a new machine: `python scripts/hf_sync.py pull --run-id <run_id> --best-only`.
+  - `python scripts/hf_sync.py list` shows what is backed up.
+- **Before releasing the machine:** `bash scripts/sync_results.sh "<msg>"` (git push results + HF push checkpoints).
 
 ## Phase 1 commands
 

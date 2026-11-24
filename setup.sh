@@ -24,6 +24,8 @@ for a in "$@"; do
   esac
 done
 
+[ -f "$ROOT/.env" ] && set -a && source "$ROOT/.env" && set +a
+
 log() { printf '\n\033[1;32m[setup]\033[0m %s\n' "$*"; }
 
 # ---------------------------------------------------------------- 1. system
@@ -100,5 +102,16 @@ from mmcv.ops import nms  # verifies compiled CUDA ops
 assert torch.cuda.is_available(), "CUDA not available"
 EOF
 python -m pytest -q tests
+
+if [ -n "${HF_REPO:-}" ]; then
+  python - <<'PYEOF' || echo "WARNING: HF login failed. Put a write HF_TOKEN in .env."
+import os
+from huggingface_hub import HfApi
+user = HfApi(token=os.environ.get("HF_TOKEN")).whoami()["name"]
+print(f"HF login ok: {user} -> {os.environ['HF_REPO']}")
+PYEOF
+else
+  echo "WARNING: no .env with HF_REPO/HF_TOKEN - checkpoints will not be backed up. See .env.example"
+fi
 
 log "done. Next: source .venv/bin/activate && bash scripts/status.sh"

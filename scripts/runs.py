@@ -74,6 +74,17 @@ def finish(a):
     _write(rows)
 
 
+def reopen(a):
+    rows = _read()
+    for r in rows:
+        if r["run_id"] == a.run_id:
+            r.update(status="running", finished="",
+                     notes=(r["notes"] + f" | resumed {_now()} on {socket.gethostname()}").strip(" |"))
+            _write(rows)
+            return
+    raise SystemExit(f"unknown run_id {a.run_id}")
+
+
 def show(_):
     rows = _read()
     if not rows:
@@ -91,6 +102,7 @@ def main():
     f = sp.add_parser("finish"); f.set_defaults(fn=finish)
     f.add_argument("run_id"); f.add_argument("--status", default="done")
     f.add_argument("--metrics", default=""); f.add_argument("--gpu-hours", type=float)
+    o = sp.add_parser("reopen"); o.set_defaults(fn=reopen); o.add_argument("run_id")
     l = sp.add_parser("list"); l.set_defaults(fn=show)
     a = ap.parse_args(); a.fn(a)
 

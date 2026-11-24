@@ -229,3 +229,4 @@ outputs/
 .venv/
 third_party/
 .data_root
+.env

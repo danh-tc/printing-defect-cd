@@ -4,8 +4,8 @@
 #   bash scripts/sync_results.sh "phase1: dataset analysis"
 #
 # Copies small analysis/eval outputs from outputs/ into results/, then commits and pushes
-# results/ + PROGRESS.md. Checkpoints (*.pth) are NOT committed; set RCLONE_REMOTE
-# (e.g. "gdrive:pdcd") to also upload best checkpoints with rclone.
+# results/ + PROGRESS.md. Checkpoints (*.pth) are not committed to git; they are pushed
+# to the Hugging Face Hub when HF_REPO is set (in .env).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -22,10 +22,15 @@ for d in outputs/analysis outputs/eval outputs/review outputs/preds/absdiff; do
   done
 done
 
-if [ -n "${RCLONE_REMOTE:-}" ] && command -v rclone >/dev/null; then
-  find outputs/work_dirs -name 'best_*.pth' | while read -r c; do
-    rclone copy "$c" "$RCLONE_REMOTE/$(dirname "${c#outputs/}")" --progress
+# checkpoints -> Hugging Face Hub (private repo); see scripts/hf_sync.py
+[ -f .env ] && set -a && source .env && set +a
+if [ -n "${HF_REPO:-}" ] && [ -d outputs/work_dirs ]; then
+  for w in outputs/work_dirs/*/; do
+    [ -d "$w" ] || continue
+    python scripts/hf_sync.py push --run-id "$(basename "$w")" --work-dir "$w" || echo "HF push failed for $w"
   done
+else
+  echo "WARNING: HF_REPO not set — checkpoints are NOT backed up."
 fi
 
 git add results PROGRESS.md

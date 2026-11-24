@@ -6,7 +6,7 @@
 - Next gate: **Gate 0 (25/11)** — GPU-hours per 40k-iter run.
 
 ## Next actions
-1. On the GPU machine: `bash setup.sh` → `bash scripts/status.sh`.
+1. On the GPU machine: `cp .env.example .env` (fill HF_TOKEN, HF_REPO) → `bash setup.sh` → `bash scripts/status.sh`.
 2. `python scripts/analyze_dataset.py --data $(cat .data_root) --out outputs/analysis`
    → check `leakage.txt`, `summary.csv` (multi-component images, thickness ≤ 4 px share).
 3. `python scripts/review_samples.py --data $(cat .data_root) --n 50` → fill `review_sheet.csv`.
@@ -19,6 +19,7 @@
 ### Phase 1 – Preparation (24–25/11)
 - [x] Repo scaffold, metrics, morphology, abs-diff baseline, eval pipeline (35 tests)
 - [x] setup.sh, Open-CD configs, run registry, progress tracking
+- [x] Checkpoint backup/resume via Hugging Face Hub (`scripts/hf_sync.py`)
 - [ ] Setup on GPU machine works end-to-end
 - [ ] Dataset analysis (`results/analysis/`)
 - [ ] Manual review of 50 pairs (`results/review/review_sheet.csv`)
@@ -49,4 +50,5 @@
 | 2026-11-24 | Open-CD (likyoo/open-cd, pinned commit) instead of OpenCD-Lite; eval at full resolution (no resize) | `configs/opencd/_taktpixel_data.py` |
 
 ## Session log
+- 2026-11-24: Added HF Hub checkpoint backup (every 10 min + final), resume via RESUME=<run_id>.
 - 2026-11-24: Phase 1 code + setup/tracking scripts pushed.

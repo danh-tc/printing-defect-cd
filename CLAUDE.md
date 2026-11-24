@@ -5,17 +5,21 @@ is reinstalled each time. **All memory of past work lives in this repo.**
 
 ## At the start of every session
 1. Read `PROGRESS.md` (current phase, decisions, next actions) and run `bash scripts/status.sh`.
-2. If `.venv` / `third_party/open-cd` / `.data_root` is missing → `bash setup.sh` (≈10–20 min).
-3. `source .venv/bin/activate` before any python.
-4. Continue from **Next actions** in `PROGRESS.md`; don't redo finished items.
+2. If `.env` is missing, ask the user for HF_TOKEN / HF_REPO (see `.env.example`).
+3. If `.venv` / `third_party/open-cd` / `.data_root` is missing → `bash setup.sh` (≈10–20 min).
+4. `source .venv/bin/activate` before any python.
+5. Continue from **Next actions** in `PROGRESS.md`; don't redo finished items.
 
 ## While working
 - After finishing any task: update `PROGRESS.md` (tick checklist, add a dated line to
   *Session log*, rewrite *Next actions*), then `bash scripts/sync_results.sh "<msg>"`.
 - Record every decision (gate outcomes, chosen failure case, chosen method) in
   *Decision log* with the evidence (file path in `results/`).
-- Before the machine is released: always run `sync_results.sh`. Checkpoints in
-  `outputs/` are lost unless uploaded (`RCLONE_REMOTE`).
+- Before the machine is released: always run `sync_results.sh` (git + HF push).
+- Checkpoints live on the Hugging Face Hub (`HF_REPO` in `.env`, private), backed up
+  every 10 min during training. Restore: `python scripts/hf_sync.py pull --run-id R [--best-only]`.
+  Resume an interrupted run: `RESUME=<run_id> bash scripts/train_opencd.sh <cfg> <tag> <seed>`.
+- `.env` is not in git; recreate it from `.env.example` on each new machine.
 
 ## Research rules (do not break)
 - **Test split is used once, at the end, on frozen models** (`--final`). All selection,

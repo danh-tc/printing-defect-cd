@@ -9,6 +9,9 @@ echo "== Next actions =="
 sed -n '/^## Next actions/,/^## /p' PROGRESS.md | sed '1d;$d'
 echo; echo "== Runs (results/runs.csv) =="
 python scripts/runs.py list 2>/dev/null || echo "(python env not active)"
+echo; echo "== Checkpoints on HF =="
+[ -f .env ] && set -a && . ./.env && set +a
+if [ -n "${HF_REPO:-}" ]; then python scripts/hf_sync.py list 2>/dev/null || echo "(cannot reach HF)"; else echo "HF_REPO not set (.env missing)"; fi
 echo; echo "== Git =="
 git log --oneline -5; git status --short | head -20
 echo; echo "== Environment =="
