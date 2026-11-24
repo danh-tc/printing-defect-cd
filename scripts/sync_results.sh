@@ -13,7 +13,7 @@ MSG=${1:-"sync results"}
 
 mkdir -p results
 # analysis + evaluation tables (csv/json/txt only, < 20 MB each)
-for d in outputs/analysis outputs/eval outputs/review outputs/preds/absdiff; do
+for d in outputs/analysis outputs/eval outputs/review outputs/review_failures outputs/compare outputs/preds/absdiff; do
   [ -d "$d" ] || continue
   find "$d" -type f \( -name '*.csv' -o -name '*.json' -o -name '*.txt' \) -size -20M | while read -r f; do
     dst="results/${f#outputs/}"

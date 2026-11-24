@@ -1,0 +1,20 @@
+{
+  "run_id": "1124-1341-snunet_c16-baseline-s0",
+  "status": "done",
+  "last_iter": 40000,
+  "sec_per_iter": 0.10171147599853665,
+  "gpu_hours": 1.1301275110948517,
+  "est_gpu_hours_full": 1.1301275110948517,
+  "best_val": {
+    "aAcc": 98.64,
+    "mFscore": 94.87,
+    "mPrecision": 95.45,
+    "mRecall": 94.3,
+    "mIoU": 90.57,
+    "mAcc": 94.3,
+    "data_time": 0.0005455403837538857,
+    "time": 0.010440871005749884,
+    "step": 40000
+  },
+  "max_memory_mb": 4948
+}
